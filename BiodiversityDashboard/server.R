@@ -1,8 +1,12 @@
 function(input, output, session) {
-  occurrence_pl <- readRDS("./data/occurrence_pl.rds")
+  occurrence_pl <- readRDS("./data/occurrence_pl.rds") %>% as.data.table
   
-  selectedSpecie <- specieSelectionServer("polishSpecies",
-                                          unique(occurrence_pl$vernacularName),
-                                          unique(occurrence_pl$scientificName))
+  subsetSelected <-
+    dataSubsetSelectionServer("polishSpecies",
+                              occurrence_pl)
+  
+  specieOccurrencesMapServer("polishSpecies",
+                            occurrence_pl,
+                            reactive({subsetSelected()}))
   
 }

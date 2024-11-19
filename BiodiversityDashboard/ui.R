@@ -1,7 +1,12 @@
 library(shinydashboard)
 library(shinyjs)
+library(leaflet)
+library(RColorBrewer)
+library(magrittr)
+library(data.table)
 
-source("./R/specieSelectionModule.R")
+source("./R/dataSubsetSelectionModule.R")
+source("./R/specieOccurrencesMapModule.R")
 
 header <- dashboardHeader(
   title = "Biodiversity for Poland"
@@ -9,7 +14,8 @@ header <- dashboardHeader(
 
 body <- dashboardBody(
   useShinyjs(),
-  specieSelectionUI("polishSpecies"),
+  dataSubsetSelectionUI("polishSpecies"),
+  specieOccurrencesMapUI("polishSpecies")
 )
 
 dashboardPage(
