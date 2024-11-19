@@ -1,10 +1,16 @@
 library(shinydashboard)
+library(shinyjs)
+
+source("./R/specieSelectionModule.R")
 
 header <- dashboardHeader(
   title = "Biodiversity for Poland"
 )
 
-body <- dashboardBody()
+body <- dashboardBody(
+  useShinyjs(),
+  specieSelectionUI("polishSpecies"),
+)
 
 dashboardPage(
   header,
