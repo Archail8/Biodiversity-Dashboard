@@ -24,10 +24,21 @@ specieOccurrencesMapServer <- function(id,
         }
       })
       
+      #' address leaflet bug where zoom controls cover other elements, 
+      #' ex. dropdown menu
+      css = HTML("
+        .leaflet-top, .leaflet-bottom {
+          z-index: unset !important;
+        }
+        
+        .leaflet-top, .leaflet-bottom {z-index: 95;}
+      ")
+      
       output$specieOccurrencesBox <- renderUI({
         box(
           width = 12,
           title = "Specie Occurences Map",
+          tags$head(tags$style(css)),
           uiOutput(NS(id, "specieOccurrencesMapConditional"))
         )
       })
