@@ -5,8 +5,14 @@ function(input, output, session) {
     dataSubsetSelectionServer("polishSpecies",
                               occurrence_pl)
   
-  specieOccurrencesMapServer("polishSpecies",
-                            occurrence_pl,
-                            reactive({subsetSelected()}))
+  displayedMapBoundaries <- 
+    specieOccurrencesMapServer("polishSpecies",
+                               occurrence_pl,
+                               reactive({subsetSelected()}))
   
+  specieOccurrencesTimelinePlotServer("polishSpecies",
+                                      reactive(subsetSelected()),
+                                      reactive(displayedMapBoundaries()))
+  
+
 }

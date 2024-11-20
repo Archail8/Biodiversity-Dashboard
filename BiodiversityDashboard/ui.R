@@ -4,9 +4,11 @@ library(leaflet)
 library(RColorBrewer)
 library(magrittr)
 library(data.table)
+library(plotly)
 
 source("./R/dataSubsetSelectionModule.R")
 source("./R/specieOccurrencesMapModule.R")
+source("./R/specieOccurrencesTimelinePlotModule.R")
 
 header <- dashboardHeader(
   title = "Biodiversity for Poland"
@@ -15,7 +17,8 @@ header <- dashboardHeader(
 body <- dashboardBody(
   useShinyjs(),
   dataSubsetSelectionUI("polishSpecies"),
-  specieOccurrencesMapUI("polishSpecies")
+  specieOccurrencesMapUI("polishSpecies"),
+  specieOccurrencesTimelinePlotUI("polishSpecies")
 )
 
 dashboardPage(

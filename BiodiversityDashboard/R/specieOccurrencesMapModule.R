@@ -38,6 +38,7 @@ specieOccurrencesMapServer <- function(id,
         box(
           width = 12,
           title = "Specie Occurences Map",
+          collapsible = TRUE,
           tags$head(tags$style(css)),
           uiOutput(NS(id, "specieOccurrencesMapConditional"))
         )
@@ -99,6 +100,10 @@ specieOccurrencesMapServer <- function(id,
                      popup = ~paste(totalOccurrence$individualCounts))
         
       })
+      
+      displayedMapBoundaries <- reactive({input$specieOccurrencesMap_bounds})
+      
+      return(displayedMapBoundaries)
     }
   )
 }
