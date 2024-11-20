@@ -27,7 +27,7 @@ specieOccurrencesMapServer <- function(id,
       output$specieOccurrencesBox <- renderUI({
         box(
           width = 12,
-          title = "Specie Occurences",
+          title = "Specie Occurences Map",
           uiOutput(NS(id, "specieOccurrencesMapConditional"))
         )
       })
@@ -36,11 +36,20 @@ specieOccurrencesMapServer <- function(id,
         if (isMapToBeShown()) {
           leafletOutput(NS(id, "specieOccurrencesMap"))
         } else {
+          shinyjs::runjs(
+            paste0(
+              "Shiny.setInputValue('", 
+              NS(id, "isSpecieOccurencesMapRendered"), 
+              "', false);"
+            )
+          )
           textOutput(NS(id, "specieOccurenceSelectionRequest"))
         }
       })
       
       output$specieOccurrencesMap <- renderLeaflet({
+        req(isMapToBeShown())
+        
         leaflet(speciesOccurrences) %>% addTiles() %>%
           fitBounds(~min(speciesOccurrences$longitudeDecimal), 
                     ~min(speciesOccurrences$latitudeDecimal), 

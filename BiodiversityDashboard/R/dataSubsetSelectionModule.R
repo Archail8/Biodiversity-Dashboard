@@ -104,9 +104,10 @@ dataSubsetSelectionServer <- function(id, specieOccurrences) {
       #' recalculates twice due to dateRangeInput rendering with end==start on 
       #' specie change
       subsetSelected <- reactive({
-        isSusbsetSelected <- 
-          ifelse(is.null(input$dateRange), FALSE, input$dateRange)
-        if (isSusbsetSelected) {
+        areDatesValid <- 
+          lubridate::is.Date(input$dateRange[1]) &
+          lubridate::is.Date(input$dateRange[2])
+        if (areDatesValid) {
           specieOccurrences[scientificName == input$scientificNameSelectize &
                             eventDate >= input$dateRange[1] &
                             eventDate <= input$dateRange[2]]
