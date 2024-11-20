@@ -89,7 +89,8 @@ specieOccurrencesTimelinePlotServer <- function(id,
           y = targetSubset()$individualCount,
           name = "ploy",
           type = "bar"
-        )  %>% plotly::layout(yaxis = list(title = 'Individual Count'),
+        )  %>% plotly::layout(yaxis = list(title = 'Individual Count',
+                                           tickformat = ',d'),
                       xaxis = list(title = 'Date of Observation'))
       })
     }
