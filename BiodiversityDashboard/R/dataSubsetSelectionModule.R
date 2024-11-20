@@ -14,7 +14,7 @@ dataSubsetSelectionUI <- function(id) {
 #'
 #' @description
 #' Box with a couple of widgets for narrowing down underlying data set
-#' 
+#'
 #' @details
 #' Widgets are:
 #'  - Use scientific name checkbox
@@ -23,10 +23,10 @@ dataSubsetSelectionUI <- function(id) {
 #'    Mind that both will always be rendered and updated so that names match.
 #'  - dateRange widget limited to max/min observation dates for selected specie.
 #'    Widget will be replaced with 'missing data' info if no specie is selected.
-#' 
+#'
 #' @param id Module id
 #' @param speciesObservationDates data.table with correspondingly scientific and
-#'        vernacular name of each specie as well its' as earliest and latest 
+#'        vernacular name of each specie as well its' as earliest and latest
 #'        observation date
 #'
 #' @return reactive named \code{list} with parameters of the selected subset
@@ -83,21 +83,21 @@ dataSubsetSelectionServer <- function(id, speciesObservationDates) {
           )
         )
       })
-      
+
       output$dateRangeConditional <- shiny::renderUI({
-        if (input$scientificNameSelectize == "" ||
+        if (input$scientificNameSelectize == "" &&
             input$vernacularNameSelectize == "") {
           shiny::HTML("Please select a specie prior to establishing date range")
         } else {
-          earliestEventDate <- 
+          earliestEventDate <-
             speciesObservationDates[
               scientificName == input$scientificNameSelectize,
               minEventDate]
-          latestEventDate <- 
+          latestEventDate <-
             speciesObservationDates[
               scientificName == input$scientificNameSelectize,
               maxEventDate]
-          shiny::dateRangeInput(shiny::NS(id, "dateRange"), "Date Range", 
+          shiny::dateRangeInput(shiny::NS(id, "dateRange"), "Date Range",
                          start = earliestEventDate,
                          end = latestEventDate,
                          min = earliestEventDate,
@@ -105,7 +105,7 @@ dataSubsetSelectionServer <- function(id, speciesObservationDates) {
           )
         }
       })
-      
+
       shiny::observeEvent(input$useScientificNamesCheckbox, {
         if (input$useScientificNamesCheckbox) {
           shinyjs::hide("vernacularNameSelectize")
@@ -115,8 +115,10 @@ dataSubsetSelectionServer <- function(id, speciesObservationDates) {
           shinyjs::hide("scientificNameSelectize")
         }
       })
-      
+
       shiny::observeEvent(input$vernacularNameSelectize, {
+        # not all species have vernacular name
+        req(input$vernacularNameSelectize != "")
         shiny::updateSelectInput(
           inputId = "scientificNameSelectize",
           selected = speciesObservationDates[
@@ -124,7 +126,7 @@ dataSubsetSelectionServer <- function(id, speciesObservationDates) {
             scientificName]
           )
       })
-      
+
       shiny::observeEvent(input$scientificNameSelectize, {
         shiny::updateSelectInput(
           inputId = "vernacularNameSelectize",
@@ -133,11 +135,11 @@ dataSubsetSelectionServer <- function(id, speciesObservationDates) {
             vernacularName]
         )
       })
-      
-      #' recalculates twice due to dateRangeInput rendering with end==start on 
+
+      #' recalculates twice due to dateRangeInput rendering with end==start on
       #' specie change
       selectedSubsetParametrization <- shiny::reactive({
-        areDatesValid <- 
+        areDatesValid <-
           lubridate::is.Date(input$dateRange[1]) &
           lubridate::is.Date(input$dateRange[2])
         if (areDatesValid) {
@@ -149,7 +151,7 @@ dataSubsetSelectionServer <- function(id, speciesObservationDates) {
           list()
         }
       })
-      
+
       return(selectedSubsetParametrization)
     }
   )
