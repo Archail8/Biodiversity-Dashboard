@@ -38,7 +38,6 @@ specieOccurrencesMapServer <- function(id,
         box(
           width = 12,
           title = "Specie Occurences Map",
-          collapsible = TRUE,
           tags$head(tags$style(css)),
           uiOutput(NS(id, "specieOccurrencesMapConditional"))
         )

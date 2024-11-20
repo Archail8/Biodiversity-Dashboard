@@ -16,6 +16,7 @@ header <- dashboardHeader(
 
 body <- dashboardBody(
   useShinyjs(),
+  tags$head(tags$style(HTML('.content-wrapper { overflow: auto; }'))),
   dataSubsetSelectionUI("polishSpecies"),
   specieOccurrencesMapUI("polishSpecies"),
   specieOccurrencesTimelinePlotUI("polishSpecies")
