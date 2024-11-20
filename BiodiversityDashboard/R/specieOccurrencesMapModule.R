@@ -24,10 +24,12 @@ specieOccurrencesMapUI <- function(id) {
 #' 
 #'
 #' @param id Module id
-#' @param speciesOccurrences \code{data.frame} containing full data, 
+#' @param leafletDataSkeleton \code{data.frame} reflecting full data, may have
+#'        no rows at all, just has to mach following structure:  
 #'        \code{\link{BiodiversityDashboard::occurrence_pl}}
-#' @param specieOccurrences \code{data.frame} containing filtered data, 
-#'        as returned by \code{\link{BiodiversityDashboard::dataSubsetSelectionServer()}}
+#' @param leafletMapBounderies named \code{list} setting map boundaries
+#' @param specieOccurrences \code{data.frame} with data for specie which 
+#'        occurrences are to be displayed on map.
 #'
 #' @return named list with currently displayed map boundaries
 #' @export
@@ -39,7 +41,8 @@ specieOccurrencesMapUI <- function(id) {
 #' @importFrom shinydashboard box
 #' @importFrom shinyjs runjs
 specieOccurrencesMapServer <- function(id, 
-                                      speciesOccurrences,
+                                      leafletDataSkeleton,
+                                      leafletMapBounderies,
                                       specieOccurrences) {
   shiny::moduleServer(
     id,
@@ -97,11 +100,11 @@ specieOccurrencesMapServer <- function(id,
       output$specieOccurrencesMap <- leaflet::renderLeaflet({
         shiny::req(isMapToBeShown())
         
-        leaflet::leaflet(speciesOccurrences) %>% leaflet::addTiles() %>%
-          leaflet::fitBounds(~min(speciesOccurrences$longitudeDecimal), 
-                    ~min(speciesOccurrences$latitudeDecimal), 
-                    ~max(speciesOccurrences$longitudeDecimal), 
-                    ~max(speciesOccurrences$latitudeDecimal)) %>%
+        leaflet::leaflet(leafletDataSkeleton) %>% leaflet::addTiles() %>%
+          leaflet::fitBounds(~leafletMapBounderies$minLongitude, 
+                    ~leafletMapBounderies$minlatitude, 
+                    ~leafletMapBounderies$maxLongitude, 
+                    ~leafletMapBounderies$maxlatitude) %>%
           htmlwidgets::onRender(
             paste0("
               function(el, x) {
@@ -126,16 +129,11 @@ specieOccurrencesMapServer <- function(id,
         #' altered via proxy               
         shiny::req(input$isSpecieOccurencesMapRendered)
         
-        totalOccurrence <- 
-          specieOccurrences()[, sum(individualCount), 
-                           by = c("longitudeDecimal", "latitudeDecimal")] %>%
-          data.table::setnames("V1", "individualCounts")
-        
         leaflet::leafletProxy("specieOccurrencesMap", data = specieOccurrences()) %>%
           leaflet::clearShapes() %>%
-          leaflet::addCircles(lng = totalOccurrence$longitudeDecimal,
-                     lat = totalOccurrence$latitudeDecimal,
-                     popup = ~paste(totalOccurrence$individualCounts))
+          leaflet::addCircles(lng = ~longitudeDecimal,
+                     lat = ~latitudeDecimal,
+                     popup = ~paste(individualCounts))
         
       })
       
