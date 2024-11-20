@@ -8,7 +8,7 @@
 #' @format The \code{data.frame} with 48,461 rows and 6 columns:
 #' \describe{
 #'   \item{scientificName}{Scientific name of the specie}
-#'   \item{vernacularName }{Common name of the specie}
+#'   \item{vernacularName}{Common name of the specie}
 #'   \item{individualCount}{Number of individuals observed}
 #'   \item{longitudeDecimal}{Longitude of observation location}
 #'   \item{latitudeDecimal}{Latitute of observation location}
