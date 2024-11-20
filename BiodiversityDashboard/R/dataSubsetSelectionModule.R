@@ -101,14 +101,18 @@ dataSubsetSelectionServer <- function(id, specieOccurrences) {
         )
       })
       
+      #' recalculates twice due to dateRangeInput rendering with end==start on 
+      #' specie change
       subsetSelected <- reactive({
-        validate(need(input$scientificNameSelectize != "" &&
-                      input$vernacularNameSelectize != "", message = FALSE))
-        validate(need(input$dateRange, , message = FALSE))
-        
-        specieOccurrences[scientificName == input$scientificNameSelectize &
-                          eventDate >= input$dateRange[1] &
-                          eventDate <= input$dateRange[2]]
+        isSusbsetSelected <- 
+          ifelse(is.null(input$dateRange), FALSE, input$dateRange)
+        if (isSusbsetSelected) {
+          specieOccurrences[scientificName == input$scientificNameSelectize &
+                            eventDate >= input$dateRange[1] &
+                            eventDate <= input$dateRange[2]]
+        } else {
+          specieOccurrences[0]
+        }
       })
       
       return(subsetSelected)

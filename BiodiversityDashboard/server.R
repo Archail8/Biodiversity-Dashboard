@@ -1,5 +1,5 @@
 function(input, output, session) {
-  occurrence_pl <- readRDS("./data/occurrence_pl.rds") %>% as.data.table
+  occurrence_pl <- readRDS("./data/occurrence_pl.RDS") %>% as.data.table
   
   subsetSelected <-
     dataSubsetSelectionServer("polishSpecies",

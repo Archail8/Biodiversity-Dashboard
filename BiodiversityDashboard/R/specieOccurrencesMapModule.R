@@ -10,12 +10,34 @@ specieOccurrencesMapServer <- function(id,
   moduleServer(
     id,
     function(input, output, session) {
+      isMapToBeShown <- reactiveVal(FALSE)
+      
+      observeEvent(specieOccurrences(), {
+        if (nrow(specieOccurrences()) > 0) {
+          if (!isMapToBeShown()) {
+            isMapToBeShown(TRUE)
+          }
+        } else {
+          if (isMapToBeShown()) {
+            isMapToBeShown(FALSE)
+          }
+        }
+      })
+      
       output$specieOccurrencesBox <- renderUI({
         box(
           width = 12,
           title = "Specie Occurences",
-          leafletOutput(NS(id, "specieOccurrencesMap"))
+          uiOutput(NS(id, "specieOccurrencesMapConditional"))
         )
+      })
+      
+      output$specieOccurrencesMapConditional <- renderUI({
+        if (isMapToBeShown()) {
+          leafletOutput(NS(id, "specieOccurrencesMap"))
+        } else {
+          textOutput(NS(id, "specieOccurenceSelectionRequest"))
+        }
       })
       
       output$specieOccurrencesMap <- renderLeaflet({
@@ -23,11 +45,27 @@ specieOccurrencesMapServer <- function(id,
           fitBounds(~min(speciesOccurrences$longitudeDecimal), 
                     ~min(speciesOccurrences$latitudeDecimal), 
                     ~max(speciesOccurrences$longitudeDecimal), 
-                    ~max(speciesOccurrences$latitudeDecimal))
+                    ~max(speciesOccurrences$latitudeDecimal)) %>%
+          htmlwidgets::onRender(
+            paste0("
+              function(el, x) {
+                Shiny.setInputValue('", 
+                NS(id, "isSpecieOccurencesMapRendered"), 
+                "', true);
+            }"
+            )
+          )
       })
       
-      observeEvent(specieOccurrences(), {
-        req(nrow(specieOccurrences()) > 0)
+      output$specieOccurenceSelectionRequest <- renderText({
+        "Please select a specie and its' date range in order to display its 
+        occurence on the map."
+      })
+      
+      observeEvent(c(specieOccurrences(),
+                     input$isSpecieOccurencesMapRendered), {
+        req(isMapToBeShown())
+        req(input$isSpecieOccurencesMapRendered)
         
         totalOccurrence <- 
           specieOccurrences()[, sum(individualCount), 
@@ -39,6 +77,7 @@ specieOccurrencesMapServer <- function(id,
           addCircles(lng = totalOccurrence$longitudeDecimal,
                      lat = totalOccurrence$latitudeDecimal,
                      popup = ~paste(totalOccurrence$individualCounts))
+        
       })
     }
   )
