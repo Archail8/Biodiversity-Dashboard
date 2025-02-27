@@ -3,6 +3,8 @@ Project provides simple dashboard which accomplishes the following:
  - Upon selection displays map (limited to Poland) with dots representing specie observation and dot size number of individuals spoteed within set time period.
  - Once map is rendered simple bar plot allows user to see timeline of observations. Plot is limited to set time period and can be additionally limited to area displayed on the map (which is interactive and can be zoomed in)
 
+Exemplary instance is being hosted here: https://archail8.shinyapps.io/BiodiversityDashboard/
+
 Now, project itself is structured as a package. Reason : I could not use scaffolding tools so defaulting to standard structure, which also covers documentation and tests is a good idea. Particularly, since there is not much code in it.
 Each of the 3 functionalities/boxes of the app are split into separate Shiny module. Such approach is dictated by requirement, but also provides code requsability, modularization and testing via shiny::testServer(). As an afterhought :
 writing those modules with shiny::testServer() usage in mind would allow for a better test coverage.
